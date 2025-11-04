@@ -420,12 +420,9 @@ input.search-input:focus {
 
 .modal-content h2 {
     font-family: 'Noto Serif SC', serif;
-    font-size: 32px;
+    font-size: 28px;
     margin-bottom: 16px;
-    background: linear-gradient(120deg, var(--text-primary), var(--accent-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #e8f4ff;
 }
 
 .modal-close {
@@ -463,9 +460,9 @@ input.search-input:focus {
 .article-content {
     font-family: 'Noto Serif SC', Georgia, serif;
     font-size: 14px;
-    line-height: 1.8;
+    line-height: 1.75;
     color: #c8d8e8;
-    letter-spacing: 0.2px;
+    letter-spacing: 0.1px;
 }
 
 .article-content h1,
@@ -615,8 +612,7 @@ input.search-input:focus {
 }
 
 .article-content ol li::marker {
-    color: #b5e7ff;
-    font-weight: 600;
+    color: #a8d5ff;
 }
 
 /* 嵌套列表 */
@@ -627,9 +623,9 @@ input.search-input:focus {
 
 /* 链接 - 小清新渐变 */
 .article-content a {
-    color: #a8d5ff;
+    color: #5da4f4;
     text-decoration: none;
-    background: linear-gradient(90deg, #b5e7ff, #ffb3d9);
+    background: linear-gradient(90deg, #265bc7, #044b9b);
     background-size: 200% 2px;
     background-position: 100% 100%;
     background-repeat: no-repeat;
