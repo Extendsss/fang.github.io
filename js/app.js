@@ -75,8 +75,8 @@ function openPost(post) {
                             <h2>${post.title}</h2>
                             <div class="post-meta">${post.date} · ${post.tags.join(', ')}</div>
                             <hr>
-                            <div>${html}</div>
-                            <div style="text-align: right; margin-top: 32px">
+                            <div class="article-content">${html}</div>
+                            <div style="text-align: right; margin-top: 48px">
                                 <button class="btn primary" onclick="closeModal()">关 闭</button>
                             </div>
                         </div>
