@@ -12,7 +12,6 @@ const filtersEl = document.getElementById('filters');
 const qEl = document.getElementById('q');
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// 渲染文章卡片
 function renderPosts(list) {
     postsEl.innerHTML = '';
     if (list.length === 0) {
@@ -34,32 +33,40 @@ function renderPosts(list) {
     });
 }
 
-// 打开 Markdown 文章
 function openPost(file, title, date, tags) {
     fetch(file)
         .then(res => res.text())
         .then(md => {
-            const html = marked.parse(md); // marked.js 渲染 Markdown
+            const html = marked.parse(md);
             const modal = document.createElement('div');
             modal.id = 'modal-root';
             modal.innerHTML = `
-        <div style="position:fixed;inset:0;background:rgba(2,6,23,0.7);display:flex;align-items:center;justify-content:center;padding:20px;z-index:9999">
-          <div style="max-width:820px;width:100%;background:#071425;padding:20px;border-radius:12px;border:1px solid rgba(255,255,255,0.03);color:inherit">
-            <h2>${title}</h2>
-            <div class="meta">${date} · ${tags}</div>
-            <hr style="border:none;border-top:1px solid rgba(255,255,255,0.03);margin:12px 0">
-            <div>${html}</div>
-            <div style="text-align:right;margin-top:12px">
-              <button class="btn" onclick="document.getElementById('modal-root').remove();">关 闭</button>
-            </div>
-          </div>
-        </div>`;
+              <div id="modal-content">
+                <button class="modal-close" onclick="closeModal()">✕</button>
+                <h2>${title}</h2>
+                <div class="meta">${date} · ${tags}</div>
+                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:12px 0">
+                <div>${html}</div>
+                <div style="text-align:right;margin-top:16px">
+                  <button class="btn" onclick="closeModal()">关 闭</button>
+                </div>
+              </div>`;
             document.body.appendChild(modal);
+            document.body.style.overflow = 'hidden';
+            // 点击遮罩关闭
+            modal.addEventListener('click', e => {
+                if (e.target.id === 'modal-root') closeModal();
+            });
         })
         .catch(err => console.error('加载文章失败：', err));
 }
 
-// 标签、最新文章、搜索功能保持不变
+function closeModal() {
+    const modal = document.getElementById('modal-root');
+    if (modal) modal.remove();
+    document.body.style.overflow = '';
+}
+
 function uniqueTags(data) {
     const s = new Set();
     data.forEach(p => p.tags.forEach(t => s.add(t)));
@@ -91,7 +98,6 @@ document.getElementById('clear').onclick = () => { qEl.value=''; filter(); }
 document.getElementById('writeBtn').onclick = () => { alert('大小姐提示：写下你的第一篇小日记吧，鸽鸽~'); }
 qEl.addEventListener('keydown', e => { if(e.key==='Enter') filter(); });
 
-// 初始渲染
 renderFilters();
 renderLatest();
 renderPosts(posts);
