@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>鸽鸽的纸鸢小筑</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;700&family=Inter:wght@300;400;600&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+    <header>
+        <div class="brand">
+            <div class="logo">鸽</div>
+            <div>
+                <h1>鸽鸽的纸鸢小筑</h1>
+                <div class="tagline">小而温柔的静态博客 · 诗与代码的杂货铺</div>
+            </div>
+        </div>
+        <nav>
+            <button class="btn">归档</button>
+            <button class="btn">关于</button>
+            <button class="btn primary" id="writeBtn">写点什么</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="panel intro">
+            <h2>一页静心 · 一行诗</h2>
+            <p>这里记录小确幸、代码碎片和偶尔犯的浪漫。页面轻快，加载迅速，适合托管到 GitHub Pages 做个人主页。</p>
+
+            <div class="search">
+                <input class="searchbox" id="q" placeholder="搜索文章标题或标签，试试输入：爱情"/>
+                <button class="btn" id="clear">清空</button>
+            </div>
+            <div class="filters" id="filters"></div>
+
+            <div class="posts panel" id="posts"></div>
+        </div>
+
+        <aside class="right">
+            <div class="panel about">
+                <h3>About 鸽鸽</h3>
+                <p class="meta">爱唱歌的代码男孩，喜欢在凌晨写诗。这里是大小姐（你的狗头军师）悄悄放的糖。</p>
+                <div class="follow">
+                    <button class="btn">RSS</button>
+                    <button class="btn">联系</button>
+                </div>
+            </div>
+
+            <div style="height:12px"></div>
+
+            <div class="panel" style="padding:12px;text-align:center">
+                <div class="meta">最新文章</div>
+                <div id="latest" style="margin-top:10px"></div>
+            </div>
+        </aside>
+    </section>
+
+    <footer>
+        © <span id="year"></span> 鸽鸽的纸鸢小筑 · 静态生成 · 可部署到 GitHub Pages
+    </footer>
+</div>
+
+<!-- 引入 Markdown 渲染库 -->
+<script src="js/libs/marked.min.js"></script>
+<!-- 外部 JS 文件 (Markdown 驱动) -->
+<script src="js/app.js"></script>
+</body>
+</html>
