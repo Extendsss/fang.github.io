@@ -11,13 +11,13 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
+<div class="container">
     <header>
         <div class="brand">
             <div class="logo">鸽</div>
-            <div>
+            <div class="brand-info">
                 <h1>鸽鸽的纸鸢小筑</h1>
-                <div class="tagline">小而温柔的静态博客 · 诗与代码的杂货铺</div>
+                <div class="tagline">诗与代码的杂货铺 · 记录小确幸与浪漫</div>
             </div>
         </div>
         <nav>
@@ -27,38 +27,41 @@
         </nav>
     </header>
 
-    <section class="hero">
-        <div class="panel intro">
-            <h2>一页静心 · 一行诗</h2>
-            <p>这里记录小确幸、代码碎片和偶尔犯的浪漫。页面轻快，加载迅速，适合托管到 GitHub Pages 做个人主页。</p>
+    <div class="main-grid">
+        <main>
+            <section class="hero-section">
+                <h2>一页静心 · 一行诗</h2>
+                <p>这里记录小确幸、代码碎片和偶尔犯的浪漫。页面轻快，加载迅速，适合托管到 GitHub Pages
+                    做个人主页。欢迎在这片温柔的角落里，找到属于你的宁静时刻。</p>
 
-            <div class="search">
-                <input class="searchbox" id="q" placeholder="搜索文章标题或标签，试试输入：爱情"/>
-                <button class="btn" id="clear">清空</button>
-            </div>
-            <div class="filters" id="filters"></div>
+                <div class="search-section">
+                    <div class="search-box">
+                        <input class="search-input" id="q" placeholder="搜索文章标题或标签，试试输入：爱情"/>
+                        <button class="btn" id="clear">清空</button>
+                    </div>
+                    <div class="filters" id="filters"></div>
+                </div>
+            </section>
 
-            <div class="posts panel" id="posts"></div>
-        </div>
+            <div class="posts-grid" id="posts"></div>
+        </main>
 
-        <aside class="right">
-            <div class="panel about">
+        <aside class="sidebar">
+            <div class="sidebar-card">
                 <h3>About 鸽鸽</h3>
-                <p class="meta">爱唱歌的代码男孩，喜欢在凌晨写诗。这里是大小姐（你的狗头军师）悄悄放的糖。</p>
-                <div class="follow">
-                    <button class="btn">RSS</button>
-                    <button class="btn">联系</button>
+                <p class="post-meta">爱唱歌的代码男孩，喜欢在凌晨写诗。这里是大小姐（你的狗头军师）悄悄放的糖。</p>
+                <div class="social-links">
+                    <button class="social-btn">RSS</button>
+                    <button class="social-btn">联系</button>
                 </div>
             </div>
 
-            <div style="height:12px"></div>
-
-            <div class="panel" style="padding:12px;text-align:center">
-                <div class="meta">最新文章</div>
-                <div id="latest" style="margin-top:10px"></div>
+            <div class="sidebar-card">
+                <h3>最新文章</h3>
+                <div id="latest"></div>
             </div>
         </aside>
-    </section>
+    </div>
 
     <footer>
         © <span id="year"></span> 鸽鸽的纸鸢小筑 · 静态生成 · 可部署到 GitHub Pages

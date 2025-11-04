@@ -1,9 +1,33 @@
 // Markdown 驱动文章列表
 const posts = [
-    { id: 1, title: '凌晨唱给月亮的歌', date: '2025-10-01', tags: ['诗','爱情'], file: 'posts/2025-10-01-凌晨唱给月亮的歌.md' },
-    { id: 2, title: '把注释写成情书', date: '2025-09-20', tags: ['代码','生活'], file: 'posts/2025-11-01-把注释写成情书.md' },
-    { id: 3, title: '静态站点的小确幸', date: '2025-08-03', tags: ['指南','工具'], file: 'posts/2025-08-03-静态站点的小确幸.md' },
-    { id: 4, title: '音乐与算法的相遇', date: '2025-05-11', tags: ['音乐','算法'], file: 'posts/2025-05-11-音乐与算法的相遇.md' }
+    {
+        id: 1,
+        title: '凌晨唱给月亮的歌',
+        date: '2025-10-01',
+        tags: ['诗', '爱情'],
+        file: 'posts/2025-10-01-凌晨唱给月亮的歌.md'
+    },
+    {
+        id: 2,
+        title: '把注释写成情书',
+        date: '2025-09-20',
+        tags: ['代码', '生活'],
+        file: 'posts/2025-11-01-把注释写成情书.md'
+    },
+    {
+        id: 3,
+        title: '静态站点的小确幸',
+        date: '2025-08-03',
+        tags: ['指南', '工具'],
+        file: 'posts/2025-08-03-静态站点的小确幸.md'
+    },
+    {
+        id: 4,
+        title: '音乐与算法的相遇',
+        date: '2025-05-11',
+        tags: ['音乐', '算法'],
+        file: 'posts/2025-05-11-音乐与算法的相遇.md'
+    }
 ];
 
 const postsEl = document.getElementById('posts');
@@ -15,56 +39,71 @@ document.getElementById('year').textContent = new Date().getFullYear();
 function renderPosts(list) {
     postsEl.innerHTML = '';
     if (list.length === 0) {
-        postsEl.innerHTML = '<div class="panel" style="grid-column:1/-1;text-align:center;color:var(--muted);padding:24px;border-radius:12px">没有匹配的文章</div>';
+        postsEl.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        <div style="font-size: 18px; margin-bottom: 8px;">没有找到匹配的文章</div>
+                        <div style="font-size: 14px;">试试其他关键词吧~</div>
+                    </div>`;
         return;
     }
     list.forEach(p => {
         const card = document.createElement('article');
-        card.className = 'card';
+        card.className = 'post-card';
         card.innerHTML = `
-      <div>
-        <h3>${p.title}</h3>
-        <div class="meta">${p.date} · ${p.tags.join(', ')}</div>
-      </div>
-      <div style="margin-top:10px;display:flex;justify-content:space-between;align-items:center">
-        <button class="btn" onclick="openPost('${p.file}', '${p.title}', '${p.date}', '${p.tags.join(', ')}')">阅读全文</button>
-      </div>`;
+                    <h3>${p.title}</h3>
+                    <div class="post-meta">${p.date} · ${p.tags.join(', ')}</div>
+                    <div class="read-more">阅读全文 →</div>
+                `;
+        card.onclick = () => openPost(p);
         postsEl.appendChild(card);
     });
 }
 
-function openPost(file, title, date, tags) {
-    fetch(file)
+function openPost(post) {
+    fetch(post.file)
         .then(res => res.text())
         .then(md => {
             const html = marked.parse(md);
             const modal = document.createElement('div');
-            modal.id = 'modal-root';
+            modal.className = 'modal-overlay';
             modal.innerHTML = `
-              <div id="modal-content">
-                <button class="modal-close" onclick="closeModal()">✕</button>
-                <h2>${title}</h2>
-                <div class="meta">${date} · ${tags}</div>
-                <hr style="border:none;border-top:1px solid rgba(255,255,255,0.1);margin:12px 0">
-                <div>${html}</div>
-                <div style="text-align:right;margin-top:16px">
-                  <button class="btn" onclick="closeModal()">关 闭</button>
-                </div>
-              </div>`;
+                        <div class="modal-content">
+                            <button class="modal-close">✕</button>
+                            <h2>${post.title}</h2>
+                            <div class="post-meta">${post.date} · ${post.tags.join(', ')}</div>
+                            <hr>
+                            <div>${html}</div>
+                            <div style="text-align: right; margin-top: 32px">
+                                <button class="btn primary" onclick="closeModal()">关 闭</button>
+                            </div>
+                        </div>
+                    `;
             document.body.appendChild(modal);
             document.body.style.overflow = 'hidden';
-            // 点击遮罩关闭
-            modal.addEventListener('click', e => {
-                if (e.target.id === 'modal-root') closeModal();
-            });
+
+            modal.querySelector('.modal-close').onclick = closeModal;
+            modal.onclick = (e) => {
+                if (e.target.className === 'modal-overlay') closeModal();
+            };
         })
-        .catch(err => console.error('加载文章失败：', err));
+        .catch(err => {
+            console.error('加载文章失败：', err);
+            alert('文章加载失败，请稍后再试');
+        });
 }
 
 function closeModal() {
-    const modal = document.getElementById('modal-root');
-    if (modal) modal.remove();
-    document.body.style.overflow = '';
+    const modal = document.querySelector('.modal-overlay');
+    if (modal) {
+        modal.style.animation = 'fadeIn 0.2s ease reverse';
+        setTimeout(() => {
+            modal.remove();
+            document.body.style.overflow = '';
+        }, 200);
+    }
 }
 
 function uniqueTags(data) {
@@ -80,23 +119,43 @@ function renderFilters() {
         const b = document.createElement('button');
         b.className = 'tag';
         b.textContent = t;
-        b.onclick = () => { qEl.value = t; filter(); }
+        b.onclick = () => {
+            qEl.value = t;
+            filter();
+        }
         filtersEl.appendChild(b);
     });
 }
 
 function renderLatest() {
-    latestEl.innerHTML = posts.slice(0, 3).map(p => `<div style="margin:8px 0"><strong>${p.title}</strong><div class="meta">${p.date}</div></div>`).join('');
+    latestEl.innerHTML = posts.slice(0, 3).map(p => `
+                <div class="latest-post">
+                    <div class="latest-post-title">${p.title}</div>
+                    <div class="post-meta">${p.date}</div>
+                </div>
+            `).join('');
 }
 
 function filter() {
     const q = qEl.value.trim().toLowerCase();
-    renderPosts(posts.filter(p => p.title.toLowerCase().includes(q) || p.tags.join(' ').toLowerCase().includes(q)));
+    renderPosts(posts.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.tags.join(' ').toLowerCase().includes(q)
+    ));
 }
 
-document.getElementById('clear').onclick = () => { qEl.value=''; filter(); }
-document.getElementById('writeBtn').onclick = () => { alert('大小姐提示：写下你的第一篇小日记吧，鸽鸽~'); }
-qEl.addEventListener('keydown', e => { if(e.key==='Enter') filter(); });
+document.getElementById('clear').onclick = () => {
+    qEl.value = '';
+    filter();
+};
+
+document.getElementById('writeBtn').onclick = () => {
+    alert('大小姐提示：写下你的第一篇小日记吧，鸽鸽~ 💝');
+};
+
+qEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') filter();
+});
 
 renderFilters();
 renderLatest();
