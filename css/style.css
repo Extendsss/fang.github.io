@@ -1,3 +1,4 @@
+
 :root {
     --bg-primary: #0a0e1a;
     --bg-secondary: #0f1724;
@@ -459,10 +460,176 @@ input.search-input:focus {
     margin: 24px 0;
 }
 
-.modal-content p {
+/* Markdown 内容样式 - 清新护眼 */
+.article-content {
+    font-family: 'Noto Serif SC', Georgia, serif;
+    font-size: 17px;
+    line-height: 2;
+    color: #d4dce6;
+    letter-spacing: 0.3px;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+    font-family: 'Noto Serif SC', serif;
+    color: var(--text-primary);
+    margin-top: 2em;
+    margin-bottom: 0.8em;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.article-content h1 {
+    font-size: 28px;
+    padding-bottom: 0.5em;
+    border-bottom: 2px solid rgba(122, 208, 255, 0.2);
+    background: linear-gradient(120deg, var(--text-primary), var(--accent-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.article-content h2 {
+    font-size: 24px;
+    padding-left: 12px;
+    border-left: 4px solid var(--accent-pink);
+}
+
+.article-content h3 {
+    font-size: 20px;
+    color: var(--accent-blue);
+}
+
+.article-content p {
+    margin: 1.5em 0;
+    text-indent: 2em;
+    color: #d4dce6;
+}
+
+.article-content blockquote {
+    margin: 1.5em 0;
+    padding: 1.2em 1.5em;
+    background: linear-gradient(135deg, rgba(122, 208, 255, 0.08), rgba(255, 122, 182, 0.08));
+    border-left: 4px solid var(--accent-pink);
+    border-radius: 0 12px 12px 0;
+    color: #b8c5d6;
+    font-style: italic;
+}
+
+.article-content blockquote p {
+    text-indent: 0;
+    margin: 0.5em 0;
+}
+
+.article-content code {
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    background: rgba(122, 208, 255, 0.1);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.9em;
+    color: #7ad0ff;
+    border: 1px solid rgba(122, 208, 255, 0.2);
+}
+
+.article-content pre {
+    margin: 1.5em 0;
+    padding: 1.5em;
+    background: #0d1117;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.article-content pre code {
+    background: none;
+    padding: 0;
+    border: none;
+    color: #e6eef6;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.article-content ul,
+.article-content ol {
+    margin: 1.5em 0;
+    padding-left: 2em;
+}
+
+.article-content li {
+    margin: 0.8em 0;
     line-height: 1.8;
-    color: var(--text-muted);
-    margin: 16px 0;
+    color: #d4dce6;
+}
+
+.article-content li::marker {
+    color: var(--accent-pink);
+}
+
+.article-content a {
+    color: var(--accent-blue);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(122, 208, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.article-content a:hover {
+    color: var(--accent-pink);
+    border-bottom-color: var(--accent-pink);
+}
+
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 12px;
+    margin: 2em auto;
+    display: block;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.article-content hr {
+    margin: 3em 0;
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(122, 208, 255, 0.3), transparent);
+}
+
+.article-content table {
+    width: 100%;
+    margin: 2em 0;
+    border-collapse: collapse;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.article-content th,
+.article-content td {
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-align: left;
+}
+
+.article-content th {
+    background: rgba(122, 208, 255, 0.1);
+    color: var(--accent-blue);
+    font-weight: 600;
+}
+
+.article-content td {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.article-content strong {
+    color: var(--accent-pink);
+    font-weight: 600;
+}
+
+.article-content em {
+    color: var(--accent-blue);
+    font-style: italic;
 }
 
 /* 页脚 */
