@@ -152,15 +152,20 @@ function renderLatest() {
 
 function filter() {
     const q = qEl.value.trim().toLowerCase();
-    renderPosts(posts.filter(p =>
+    const filtered = posts.filter(p =>
         p.title.toLowerCase().includes(q) ||
         p.tags.join(' ').toLowerCase().includes(q)
-    ));
+    );
+    renderPosts(filtered);
+}
+
+function initPosts() {
+    renderPosts(posts.slice(0, 4));
 }
 
 document.getElementById('clear').onclick = () => {
     qEl.value = '';
-    filter();
+    initPosts();
 };
 
 document.getElementById('writeBtn').onclick = () => {
@@ -173,4 +178,4 @@ qEl.addEventListener('keydown', e => {
 
 renderFilters();
 renderLatest();
-renderPosts(posts);
+initPosts();
