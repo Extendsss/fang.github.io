@@ -59,10 +59,10 @@ function applyTheme(theme) {
     // 更新按钮图标和文字
     if (theme === 'light') {
         themeIcon.textContent = '🌙';
-        themeBtn.childNodes[1].textContent = ' 深色';
+        themeBtn.lastChild.textContent = ' 深色';
     } else {
         themeIcon.textContent = '☀️';
-        themeBtn.childNodes[1].textContent = ' 浅色';
+        themeBtn.lastChild.textContent = ' 浅色';
     }
 }
 
