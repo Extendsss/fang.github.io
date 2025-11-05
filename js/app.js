@@ -43,27 +43,60 @@ const filtersEl = document.getElementById('filters');
 const qEl = document.getElementById('q');
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// ==================== 主题切换功能 ====================
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+
+// 从 localStorage 读取主题，默认为深色
+let currentTheme = localStorage.getItem('theme') || 'dark';
+
+// 应用主题
+function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    currentTheme = theme;
+    localStorage.setItem('theme', theme);
+
+    // 更新按钮图标和文字
+    if (theme === 'light') {
+        themeIcon.textContent = '🌙';
+        themeBtn.childNodes[1].textContent = ' 深色';
+    } else {
+        themeIcon.textContent = '☀️';
+        themeBtn.childNodes[1].textContent = ' 浅色';
+    }
+}
+
+// 初始化主题
+applyTheme(currentTheme);
+
+// 主题切换按钮点击事件
+themeBtn.addEventListener('click', () => {
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    applyTheme(newTheme);
+});
+
+// ==================== 文章渲染功能 ====================
 function renderPosts(list) {
     postsEl.innerHTML = '';
     if (list.length === 0) {
         postsEl.innerHTML = `
-                    <div class="empty-state">
-                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                        </svg>
-                        <div style="font-size: 18px; margin-bottom: 8px;">没有找到匹配的文章</div>
-                        <div style="font-size: 14px;">试试其他关键词吧~</div>
-                    </div>`;
+            <div class="empty-state">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <div style="font-size: 18px; margin-bottom: 8px;">没有找到匹配的文章</div>
+                <div style="font-size: 14px;">试试其他关键词吧~</div>
+            </div>`;
         return;
     }
     list.forEach(p => {
         const card = document.createElement('article');
         card.className = 'post-card';
         card.innerHTML = `
-                    <h3>${p.title}</h3>
-                    <div class="post-meta">${p.date} · ${p.tags.join(', ')}</div>
-                    <div class="read-more">阅读全文 →</div>
-                `;
+            <h3>${p.title}</h3>
+            <div class="post-meta">${p.date} · ${p.tags.join(', ')}</div>
+            <div class="read-more">阅读全文 →</div>
+        `;
         card.onclick = () => openPost(p);
         postsEl.appendChild(card);
     });
@@ -77,17 +110,17 @@ function openPost(post) {
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
             modal.innerHTML = `
-                        <div class="modal-content">
-                            <button class="modal-close">✕</button>
-                            <h2>${post.title}</h2>
-                            <div class="post-meta">${post.date} · ${post.tags.join(', ')}</div>
-                            <hr>
-                            <div class="article-content">${html}</div>
-                            <div style="text-align: right; margin-top: 48px">
-                                <button class="btn primary" onclick="closeModal()">关 闭</button>
-                            </div>
-                        </div>
-                    `;
+                <div class="modal-content">
+                    <button class="modal-close">✕</button>
+                    <h2>${post.title}</h2>
+                    <div class="post-meta">${post.date} · ${post.tags.join(', ')}</div>
+                    <hr>
+                    <div class="article-content">${html}</div>
+                    <div style="text-align: right; margin-top: 48px">
+                        <button class="btn primary" onclick="closeModal()">关 闭</button>
+                    </div>
+                </div>
+            `;
             document.body.appendChild(modal);
             document.body.style.overflow = 'hidden';
 
@@ -163,6 +196,7 @@ function initPosts() {
     renderPosts(posts.slice(0, 4));
 }
 
+// ==================== 事件监听 ====================
 document.getElementById('clear').onclick = () => {
     qEl.value = '';
     initPosts();
@@ -172,10 +206,15 @@ document.getElementById('writeBtn').onclick = () => {
     alert('大小姐提示：写下你的第一篇小日记吧，鸽鸽~ 💝');
 };
 
+document.getElementById('aboutBtn').onclick = () => {
+    alert('关于页面开发中，敬请期待~ ✨');
+};
+
 qEl.addEventListener('keydown', e => {
     if (e.key === 'Enter') filter();
 });
 
+// ==================== 初始化 ====================
 renderFilters();
 renderLatest();
 initPosts();
