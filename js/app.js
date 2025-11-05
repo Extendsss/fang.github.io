@@ -135,7 +135,8 @@ function renderFilters() {
 }
 
 function renderLatest() {
-    latestEl.innerHTML = posts.slice(0, 3).map(p => `
+    const sortedPosts = [...posts].sort((a, b) => new Date(b.date) - new Date(a.date));
+    latestEl.innerHTML = sortedPosts.slice(0, 3).map(p => `
                 <div class="latest-post">
                     <div class="latest-post-title">${p.title}</div>
                     <div class="post-meta">${p.date}</div>
