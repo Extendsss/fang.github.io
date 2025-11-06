@@ -47,8 +47,11 @@ document.getElementById('year').textContent = new Date().getFullYear();
 const themeBtn = document.getElementById('themeBtn');
 const themeIcon = document.getElementById('themeIcon');
 
-// 从 localStorage 读取主题，默认为深色
+// 从 localStorage 读取主题,默认为深色
 let currentTheme = localStorage.getItem('theme') || 'dark';
+
+// 主题循环顺序
+const themes = ['dark', 'light', 'green'];
 
 // 应用主题
 function applyTheme(theme) {
@@ -58,6 +61,9 @@ function applyTheme(theme) {
 
     // 更新按钮图标和文字
     if (theme === 'light') {
+        themeIcon.textContent = '🌿';
+        themeBtn.lastChild.textContent = ' 清新';
+    } else if (theme === 'green') {
         themeIcon.textContent = '🌑';
         themeBtn.lastChild.textContent = ' 深色';
     } else {
@@ -69,10 +75,11 @@ function applyTheme(theme) {
 // 初始化主题
 applyTheme(currentTheme);
 
-// 主题切换按钮点击事件
+// 主题切换按钮点击事件 - 循环切换三个主题
 themeBtn.addEventListener('click', () => {
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(newTheme);
+    const currentIndex = themes.indexOf(currentTheme);
+    const nextIndex = (currentIndex + 1) % themes.length;
+    applyTheme(themes[nextIndex]);
 });
 
 // ==================== 文章渲染功能 ====================
