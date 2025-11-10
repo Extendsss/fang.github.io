@@ -122,19 +122,19 @@ function openPost(post) {
     fetch(post.file)
         .then(res => res.text())
         .then(md => {
-            // 🧩 先处理 Markdown 源码，把带 "|" 的图片拆分成主图 + 备用图
+            // 🧩 预处理 Markdown，支持主图|备用图语法
             const processedMd = md.replace(/!\[([^\]]*)\]\(([^|\s]+)\|([^)]+)\)/g, (match, alt, main, backup) => {
                 // 转义防止 XSS
                 const safeAlt = alt.replace(/"/g, '&quot;');
                 const safeMain = main.trim();
                 const safeBackup = backup.trim();
-                return `<img alt="${safeAlt}" src="${safeMain}" data-backup="${safeBackup}"/>`;
+                return `<img alt="${safeAlt}" src="${safeMain}" data-backup="${safeBackup}" class="fade-img"/>`;
             });
 
-            // 用 marked 渲染（此时双链接已替换成安全 HTML）
+            // marked 渲染 HTML
             const html = marked.parse(processedMd);
 
-            // 构造弹窗
+            // 创建弹窗
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
             modal.innerHTML = `
@@ -152,17 +152,35 @@ function openPost(post) {
             document.body.appendChild(modal);
             document.body.style.overflow = 'hidden';
 
-            // 🖼️ 图片加载失败时自动切换备用地址
+            // 🪄 图片加载动画与备用切换逻辑
             modal.querySelectorAll('.article-content img').forEach(img => {
+                // 初始透明，等加载后淡入
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.6s ease';
+
+                img.addEventListener('load', () => {
+                    img.style.opacity = '1';
+                });
+
                 img.onerror = () => {
                     const backup = img.getAttribute('data-backup');
                     if (backup && img.src !== backup) {
-                        img.src = backup;
+                        console.log(`主图加载失败，切换备用图：${backup}`);
+                        img.style.opacity = '0'; // 先淡出
+                        setTimeout(() => {
+                            img.src = backup;
+                        }, 200); // 切换时轻微延迟
+                    } else {
+                        // 没有备用图，显示“加载失败”提示
+                        img.replaceWith(Object.assign(document.createElement('div'), {
+                            textContent: '（图片加载失败了~）',
+                            style: 'text-align:center;color:#999;font-size:14px;margin:12px 0;'
+                        }));
                     }
                 };
             });
 
-            // 关闭按钮
+            // 关闭事件绑定
             modal.querySelector('.modal-close').onclick = closeModal;
             modal.onclick = (e) => {
                 if (e.target.className === 'modal-overlay') closeModal();

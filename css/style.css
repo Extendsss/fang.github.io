@@ -1036,3 +1036,13 @@ footer {
     background: linear-gradient(180deg, #ff8fc7, #8dd9ff);
     box-shadow: 0 0 10px rgba(255, 122, 182, 0.5);
 }
+
+/* 图片淡入动画 */
+.article-content img.fade-img {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.article-content img.fade-img[src] {
+    opacity: 1;
+}
