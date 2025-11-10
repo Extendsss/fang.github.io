@@ -122,19 +122,27 @@ function openPost(post) {
     fetch(post.file)
         .then(res => res.text())
         .then(md => {
-            // 🧩 预处理 Markdown，支持主图|备用图语法
+            // 支持主图|备用图语法
             const processedMd = md.replace(/!\[([^\]]*)\]\(([^|\s]+)\|([^)]+)\)/g, (match, alt, main, backup) => {
-                // 转义防止 XSS
                 const safeAlt = alt.replace(/"/g, '&quot;');
                 const safeMain = main.trim();
                 const safeBackup = backup.trim();
-                return `<img alt="${safeAlt}" src="${safeMain}" data-backup="${safeBackup}" class="fade-img"/>`;
+                return `<div class="img-wrapper">
+                            <div class="img-loader"></div>
+                            <img alt="${safeAlt}" src="${safeMain}" data-backup="${safeBackup}" class="fade-img previewable"/>
+                        </div>`;
+            }).replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, main) => {
+                // 普通图片（无备用图）
+                const safeAlt = alt.replace(/"/g, '&quot;');
+                const safeMain = main.trim();
+                return `<div class="img-wrapper">
+                            <div class="img-loader"></div>
+                            <img alt="${safeAlt}" src="${safeMain}" class="fade-img previewable"/>
+                        </div>`;
             });
 
-            // marked 渲染 HTML
             const html = marked.parse(processedMd);
 
-            // 创建弹窗
             const modal = document.createElement('div');
             modal.className = 'modal-overlay';
             modal.innerHTML = `
@@ -152,13 +160,16 @@ function openPost(post) {
             document.body.appendChild(modal);
             document.body.style.overflow = 'hidden';
 
-            // 🪄 图片加载动画与备用切换逻辑
+            // 图片加载、备用切换
             modal.querySelectorAll('.article-content img').forEach(img => {
-                // 初始透明，等加载后淡入
+                const wrapper = img.closest('.img-wrapper');
+                const loader = wrapper.querySelector('.img-loader');
                 img.style.opacity = '0';
                 img.style.transition = 'opacity 0.6s ease';
 
                 img.addEventListener('load', () => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 400);
                     img.style.opacity = '1';
                 });
 
@@ -166,12 +177,12 @@ function openPost(post) {
                     const backup = img.getAttribute('data-backup');
                     if (backup && img.src !== backup) {
                         console.log(`主图加载失败，切换备用图：${backup}`);
-                        img.style.opacity = '0'; // 先淡出
+                        img.style.opacity = '0';
                         setTimeout(() => {
                             img.src = backup;
-                        }, 200); // 切换时轻微延迟
+                        }, 200);
                     } else {
-                        // 没有备用图，显示“加载失败”提示
+                        loader.remove();
                         img.replaceWith(Object.assign(document.createElement('div'), {
                             textContent: '（图片加载失败了~）',
                             style: 'text-align:center;color:#999;font-size:14px;margin:12px 0;'
@@ -180,7 +191,33 @@ function openPost(post) {
                 };
             });
 
-            // 关闭事件绑定
+            // 🪞 图片点击预览
+            modal.querySelectorAll('.previewable').forEach(img => {
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', () => {
+                    const preview = document.createElement('div');
+                    preview.className = 'img-preview-overlay';
+                    preview.innerHTML = `
+                        <div class="img-preview-content">
+                            <img src="${img.src}" alt="${img.alt}">
+                            <span class="img-preview-close">✕</span>
+                        </div>
+                    `;
+                    document.body.appendChild(preview);
+                    document.body.style.overflow = 'hidden';
+
+                    // 点击关闭
+                    preview.addEventListener('click', (e) => {
+                        if (e.target.classList.contains('img-preview-overlay') ||
+                            e.target.classList.contains('img-preview-close')) {
+                            preview.classList.add('fade-out');
+                            setTimeout(() => preview.remove(), 300);
+                            document.body.style.overflow = '';
+                        }
+                    });
+                });
+            });
+
             modal.querySelector('.modal-close').onclick = closeModal;
             modal.onclick = (e) => {
                 if (e.target.className === 'modal-overlay') closeModal();
