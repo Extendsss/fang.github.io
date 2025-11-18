@@ -117,6 +117,40 @@ themeBtn.addEventListener('click', () => {
     applyTheme(themes[nextIndex]);
 });
 
+// ==================== 音乐播放功能 ====================
+const musicBtn = document.getElementById('musicBtn');
+const musicIcon = document.getElementById('musicIcon');
+let audio = null;
+let isPlaying = false;
+
+// 音乐URL - 可以替换为你想要的音乐链接
+const musicUrl = 'https:/violet-02.oss-cn-beijing.aliyuncs.com/files/image-20251118163115.mp3';
+
+musicBtn.addEventListener('click', () => {
+    if (!audio) {
+        audio = new Audio(musicUrl);
+        audio.loop = true;
+        audio.volume = 0.5;
+    }
+
+    if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        musicIcon.textContent = '🎵';
+        musicBtn.classList.remove('playing');
+        musicBtn.lastChild.textContent = ' 音乐';
+    } else {
+        audio.play().catch(err => {
+            console.error('播放失败:', err);
+            alert('音乐播放失败,请检查网络连接');
+        });
+        isPlaying = true;
+        musicIcon.textContent = '🎶';
+        musicBtn.classList.add('playing');
+        musicBtn.lastChild.textContent = ' 播放中';
+    }
+});
+
 // ==================== 文章渲染功能 ====================
 function renderPosts(list) {
     postsEl.innerHTML = '';
@@ -319,41 +353,6 @@ function initPosts() {
     renderPosts(posts.slice(0, 4));
 }
 
-// ==================== 音乐播放功能 ====================
-const musicBtn = document.getElementById('musicBtn');
-const musicIcon = document.getElementById('musicIcon');
-let audio = null;
-let isPlaying = false;
-
-// 音乐URL - 可以替换为你想要的音乐链接
-const musicUrl = 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
-
-musicBtn.addEventListener('click', () => {
-    if (!audio) {
-        audio = new Audio(musicUrl);
-        audio.loop = true;
-        audio.volume = 0.5;
-    }
-
-    if (isPlaying) {
-        audio.pause();
-        isPlaying = false;
-        musicIcon.textContent = '🎵';
-        musicBtn.classList.remove('playing');
-        musicBtn.lastChild.textContent = ' 音乐';
-    } else {
-        audio.play().catch(err => {
-            console.error('播放失败:', err);
-            alert('音乐播放失败，请检查网络连接');
-        });
-        isPlaying = true;
-        musicIcon.textContent = '🎶';
-        musicBtn.classList.add('playing');
-        musicBtn.lastChild.textContent = ' 播放中';
-    }
-});
-
-
 // ==================== 事件监听 ====================
 document.getElementById('clear').onclick = () => {
     qEl.value = '';
@@ -362,10 +361,6 @@ document.getElementById('clear').onclick = () => {
 
 document.getElementById('writeBtn').onclick = () => {
     alert('大小姐提示：写下你的第一篇小日记吧，鸽鸽~ 💝');
-};
-
-document.getElementById('aboutBtn').onclick = () => {
-    alert('关于页面开发中，敬请期待~ ✨');
 };
 
 qEl.addEventListener('keydown', e => {
