@@ -131,7 +131,7 @@ let audio = null;
 let isPlaying = false;
 
 // 音乐URL - 可以替换为你想要的音乐链接
-const musicUrl = 'https:/violet-02.oss-cn-beijing.aliyuncs.com/files/image-20251118163115.mp3';
+const musicUrl = 'https://violet-02.oss-cn-beijing.aliyuncs.com/files/image-20251118163115.mp3';
 
 musicBtn.addEventListener('click', () => {
     if (!audio) {
@@ -157,6 +157,426 @@ musicBtn.addEventListener('click', () => {
         musicBtn.lastChild.textContent = ' 播放中';
     }
 });
+
+// ==================== 联系弹窗功能（增强版）====================
+const contactBtn = document.getElementById('contactBtn');
+let tempFormData = {name: '', email: '', message: ''};
+
+// 打开弹窗
+contactBtn.addEventListener('click', () => {
+    const overlay = document.createElement('div');
+    overlay.id = 'contactOverlay';
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `
+        <div class="modal-content enhanced" style="max-width: 480px; position: relative; overflow: hidden;">
+            <!-- 装饰性背景 -->
+            <div style="position: absolute; top: -50%; right: -20%; width: 300px; height: 300px; background: linear-gradient(135deg, rgba(168,85,247,0.15) 0%, rgba(236,72,153,0.15) 100%); border-radius: 50%; filter: blur(60px); pointer-events: none;"></div>
+            
+            <button class="modal-close enhanced" id="closeContactBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                    <path d="M18 6L6 18M6 6l12 12"/>
+                </svg>
+            </button>
+            
+            <div style="position: relative; z-index: 1;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                    <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 4px 12px rgba(168,85,247,0.3);">
+                        💌
+                    </div>
+                    <h2 style="margin: 0; font-size: 24px; font-weight: 700; background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">给鸽鸽留言</h2>
+                </div>
+                
+                <div class="post-meta" style="margin-bottom: 28px; opacity: 0.7; font-size: 14px;">大小姐会帮忙转达的~ ✨</div>
+                
+                <form id="contactForm">
+                    <div class="form-group">
+                        <label for="contactName" style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; opacity: 0.8;">你的昵称</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" name="name" id="contactName" 
+                                   placeholder="给自己取个可爱的名字吧" 
+                                   value="${tempFormData.name}"
+                                   class="enhanced-input" />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contactEmail" style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; opacity: 0.8;">邮箱地址</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📧</span>
+                            <input type="email" name="email" id="contactEmail" 
+                                   placeholder="方便收到鸽鸽的回信哦" 
+                                   value="${tempFormData.email}"
+                                   class="enhanced-input" />
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label for="contactMessage" style="display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; opacity: 0.8;">留言内容</label>
+                        <textarea name="message" id="contactMessage" 
+                                  rows="5" 
+                                  placeholder="想对鸽鸽说些什么呢？尽管写下来吧~ 💭"
+                                  class="enhanced-textarea">${tempFormData.message}</textarea>
+                        <div class="char-count" id="charCount" style="text-align: right; font-size: 12px; opacity: 0.5; margin-top: 6px;">0 字</div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button type="button" class="btn enhanced-btn secondary" id="cancelBtn">
+                            <span>取消</span>
+                        </button>
+                        <button type="submit" class="btn enhanced-btn primary" id="submitBtn">
+                            <span>发送留言</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left: 6px;">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <style>
+            .modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.6);
+                backdrop-filter: blur(8px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10000;
+                animation: fadeIn 0.3s ease;
+                padding: 20px;
+            }
+            
+            .modal-content.enhanced {
+                background: var(--bg-primary, #fff);
+                border-radius: 20px;
+                padding: 32px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                animation: scaleIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                border: 1px solid rgba(168, 85, 247, 0.1);
+            }
+            
+            .modal-close.enhanced {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                width: 36px;
+                height: 36px;
+                border-radius: 10px;
+                border: none;
+                background: rgba(0, 0, 0, 0.05);
+                color: var(--text-primary);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s ease;
+                z-index: 2;
+            }
+            
+            .modal-close.enhanced:hover {
+                background: rgba(239, 68, 68, 0.1);
+                color: #ef4444;
+                transform: rotate(90deg);
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .input-wrapper {
+                position: relative;
+            }
+            
+            .input-icon {
+                position: absolute;
+                left: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                font-size: 18px;
+                pointer-events: none;
+                opacity: 0.6;
+            }
+            
+            .enhanced-input {
+                width: 100%;
+                padding: 12px 14px 12px 46px;
+                border-radius: 12px;
+                border: 2px solid var(--border-color, #e5e7eb);
+                background: var(--bg-primary, #fff);
+                color: var(--text-primary, #000);
+                font-size: 14px;
+                transition: all 0.3s ease;
+                font-family: inherit;
+            }
+            
+            .enhanced-input:focus {
+                outline: none;
+                border-color: #a855f7;
+                box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+                transform: translateY(-1px);
+            }
+            
+            .enhanced-textarea {
+                width: 100%;
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 2px solid var(--border-color, #e5e7eb);
+                background: var(--bg-primary, #fff);
+                color: var(--text-primary, #000);
+                font-size: 14px;
+                resize: vertical;
+                font-family: inherit;
+                transition: all 0.3s ease;
+                min-height: 120px;
+            }
+            
+            .enhanced-textarea:focus {
+                outline: none;
+                border-color: #a855f7;
+                box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.1);
+            }
+            
+            .enhanced-btn {
+                padding: 12px 24px;
+                border-radius: 12px;
+                border: none;
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: inherit;
+            }
+            
+            .enhanced-btn.secondary {
+                background: rgba(0, 0, 0, 0.05);
+                color: var(--text-primary);
+            }
+            
+            .enhanced-btn.secondary:hover {
+                background: rgba(0, 0, 0, 0.1);
+                transform: translateY(-2px);
+            }
+            
+            .enhanced-btn.primary {
+                background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+                color: white;
+                box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+            }
+            
+            .enhanced-btn.primary:hover:not(:disabled) {
+                box-shadow: 0 6px 20px rgba(168, 85, 247, 0.5);
+                transform: translateY(-2px);
+            }
+            
+            .enhanced-btn:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            @keyframes scaleIn {
+                from { 
+                    opacity: 0;
+                    transform: scale(0.9) translateY(20px);
+                }
+                to { 
+                    opacity: 1;
+                    transform: scale(1) translateY(0);
+                }
+            }
+            
+            @keyframes slideIn {
+                from { 
+                    opacity: 0;
+                    transform: translateX(100%);
+                }
+                to { 
+                    opacity: 1;
+                    transform: translateX(0);
+                }
+            }
+        </style>
+    `;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+
+    const form = document.getElementById('contactForm');
+    const nameInput = document.getElementById('contactName');
+    const emailInput = document.getElementById('contactEmail');
+    const messageInput = document.getElementById('contactMessage');
+    const charCount = document.getElementById('charCount');
+    const submitBtn = document.getElementById('submitBtn');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const closeBtn = document.getElementById('closeContactBtn');
+
+    // 字符计数
+    const updateCharCount = () => {
+        const length = messageInput.value.length;
+        charCount.textContent = `${length} 字`;
+        charCount.style.opacity = length > 0 ? '0.7' : '0.5';
+    };
+
+    // 实时保存输入
+    nameInput.oninput = () => tempFormData.name = nameInput.value;
+    emailInput.oninput = () => tempFormData.email = emailInput.value;
+    messageInput.oninput = () => {
+        tempFormData.message = messageInput.value;
+        updateCharCount();
+    };
+
+    updateCharCount();
+
+    // 提交表单
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const message = messageInput.value.trim();
+
+        // 任意一项不为空即可发送
+        if (!name && !email && !message) {
+            showToast('至少写一点点嘛~ 💭', 'warning');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `
+            <span>发送中</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-left: 6px; animation: spin 1s linear infinite;">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 6v6l4 2"/>
+            </svg>
+            <style>
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+            </style>
+        `;
+
+        fetch('https://formspree.io/f/xdkbarpj', {
+            method: 'POST',
+            headers: {'Accept': 'application/json'},
+            body: new FormData(form)
+        })
+            .then(response => {
+                if (response.ok) {
+                    showToast('留言已经飞进邮箱啦！💝', 'success');
+                    tempFormData = {name: '', email: '', message: ''};
+                    setTimeout(() => closeContact(true), 1500);
+                } else {
+                    throw new Error('发送失败');
+                }
+            })
+            .catch(() => {
+                showToast('似乎有点小状况，再试一次好不好？😢', 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `
+                    <span>发送留言</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" style="margin-left: 6px;">
+                        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                    </svg>
+                `;
+            });
+    });
+
+    // 取消/关闭按钮
+    cancelBtn.onclick = () => closeContact(false);
+    closeBtn.onclick = () => closeContact(false);
+    overlay.onclick = (e) => {
+        if (e.target.id === 'contactOverlay') closeContact(false);
+    };
+});
+
+// 关闭弹窗（静默发送未完成的留言）
+function closeContact(skipSend) {
+    const overlay = document.getElementById('contactOverlay');
+    if (!overlay) return;
+
+    const hasContent = tempFormData.name.trim() ||
+        tempFormData.email.trim() ||
+        tempFormData.message.trim();
+
+    // 如果有内容且不是成功提交后关闭，静默发送
+    if (!skipSend && hasContent) {
+        const formData = new FormData();
+        formData.append('name', tempFormData.name || '匿名用户');
+        if (tempFormData.email) {
+            formData.append('email', tempFormData.email);
+        }
+        formData.append('message', tempFormData.message || '（未完成的留言）');
+
+        fetch('https://formspree.io/f/xdkbarpj', {
+            method: 'POST',
+            headers: {'Accept': 'application/json'},
+            body: formData
+        }).catch(() => console.log('静默发送失败'));
+    }
+
+    overlay.style.animation = 'fadeIn 0.3s ease reverse';
+    setTimeout(() => {
+        overlay.remove();
+        document.body.style.overflow = '';
+    }, 300);
+}
+
+// 美化的提示消息
+function showToast(message, type = 'info') {
+    const colors = {
+        success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        error: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+        info: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+    };
+
+    const icons = {
+        success: '✓',
+        error: '✕',
+        warning: '⚠',
+        info: 'ℹ'
+    };
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        padding: 16px 22px;
+        background: ${colors[type]};
+        color: white;
+        border-radius: 14px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(255,255,255,0.1) inset;
+        z-index: 10001;
+        font-size: 14px;
+        font-weight: 600;
+        animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        max-width: 320px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    `;
+
+    toast.innerHTML = `
+        <span style="font-size: 18px; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; background: rgba(255,255,255,0.2); border-radius: 50%;">${icons[type]}</span>
+        <span>${message}</span>
+    `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'slideIn 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
 
 // ==================== 文章渲染功能 ====================
 function renderPosts(list) {
