@@ -524,7 +524,7 @@ function closeContact(skipSend) {
             method: 'POST',
             headers: {'Accept': 'application/json'},
             body: formData
-        }).catch(() => console.log('静默发送失败'));
+        }).catch(() => console.log('exit'));
     }
 
     overlay.style.animation = 'fadeIn 0.3s ease reverse';
